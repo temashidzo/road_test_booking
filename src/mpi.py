@@ -29,6 +29,9 @@ bot = Bot(TELEGRAM_TOKEN)
 
 # Options
 chrome_options = Options()
+chrome_path = '/snap/bin/chromium'
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = chrome_path
 chrome_options.add_argument("--headless")  # Запуск в безголовом режиме
 chrome_options.add_argument("--no-sandbox")
 
