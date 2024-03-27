@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 import time
 import psycopg2
-from telegram import bot
+from telegram import Bot
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
