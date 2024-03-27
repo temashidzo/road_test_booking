@@ -24,7 +24,7 @@ logs/
 
 # Environment variables
 .env
-.venv
+.venv/
 
 # IDE specific files
 .idea/
