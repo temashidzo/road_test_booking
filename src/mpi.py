@@ -16,14 +16,18 @@ from aiogram import Bot
 import asyncio
 import yaml
 from selenium.webdriver.common.keys import Keys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-TELEGRAM_TOKEN = '7004343270:AAFT_1nYs4ra_Yxc6YdiCjdEG1WMRhgpn-U'
-DB_USER = 'postgres'
-DB_PASSWORD = 'postgres'
-DB_HOST = '10.211.55.5'
-DB_PORT ='5433'
-DB_NAME = 'telegram'
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
+DB_NAME = os.getenv('DB_NAME')
 captcha_page_url = "https://onlineservices.mpi.mb.ca/drivertesting/identity/verify"
 bot = Bot(TELEGRAM_TOKEN)
 
