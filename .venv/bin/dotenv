@@ -1,4 +1,4 @@
-#!/Users/astonuser/Documents/Docs/Projects/Mpi/.venv/bin/python
+#!/projects/mpi/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
