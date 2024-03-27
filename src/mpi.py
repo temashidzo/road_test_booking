@@ -32,12 +32,9 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")  # Запуск в безголовом режиме
 chrome_options.add_argument("--no-sandbox")
 
-
-# chrome_options.add_argument("--headless")
-
 # Instantiate the WebDriver
 
-with open('/Users/astonuser/Documents/Docs/PAFALL23/Applied Statistics/Test/MPI/cofig.yaml', 'r') as file:
+with open('/projects/mpi/configs/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 def get_latest_user_data():
@@ -135,8 +132,6 @@ async def main():
     # Submit the form
     execute_scenario('NEW_APPOINTMENT', local_driver)
 
-    
-    
         # Предполагаем, что у вас есть список центров или вы можете получить его программно
     service_centers = ["Gateway Service Centre", "Bison Service Centre", "St. Mary's Service Centre", "Main Street Service Centre", "King Edward Service Centre"]
     final_message = ""
