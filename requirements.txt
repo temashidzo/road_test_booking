@@ -10,8 +10,10 @@ beautifulsoup4==4.12.3
 bs4==0.0.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
+chromium==0.0.0
 frozenlist==1.4.1
 h11==0.14.0
+html5lib==1.1
 idna==3.6
 magic-filter==1.0.12
 multidict==6.0.5
@@ -41,5 +43,6 @@ typing_extensions==4.10.0
 tzdata==2024.1
 urllib3==2.2.1
 webdriver-manager==4.0.1
+webencodings==0.5.1
 wsproto==1.2.0
 yarl==1.9.4
