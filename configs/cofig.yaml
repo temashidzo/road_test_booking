@@ -1,0 +1,23 @@
+scenarios:
+  NEW_APPOINTMENT:
+    steps:
+      - action: waitclick
+        locator: 'CSS_SELECTOR, #link-container > span:nth-child(2) > a'
+      - action: waitclick
+        locator: 'CSS_SELECTOR, span[aria-labelledby="select2-SelectedServiceId-container"]'
+      - action: sleep
+        value: 1
+      - action: waitclick
+        locator: 'XPATH, //li[contains(., "5 - Passenger Vehicle")]'
+      - action: sleep
+        value: 1
+      - action: waitclick
+        locator: 'CSS_SELECTOR, span[aria-labelledby="select2-SelectedLanguageCode-container"]'
+      - action: sleep
+        value: 1 
+      - action: waitclick
+        locator: 'XPATH, //li[contains(., "English")]'
+      - action: sleep
+        value: 1
+      - action: click
+        locator: 'CSS_SELECTOR, button[type="submit"]'  
