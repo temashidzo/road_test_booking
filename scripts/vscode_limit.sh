@@ -1,32 +1,32 @@
 #!/bin/bash
 
-# Максимальное разрешенное количество процессов vscode-server
+# Maximum allowed number of vscode-server processes
 MAX_ALLOWED_PROCESSES=10
 
-echo "Поиск процессов vscode-server..."
+echo "Searching for vscode-server processes..."
 
-# Получаем список PID процессов vscode-server
+# Get the list of PIDs for vscode-server processes
 VSCODE_PIDS=$(pgrep -f 'vscode-server/bin/.*node' || echo "No processes found.")
 
-# Если не найдено ни одного процесса, выходим из скрипта
+# If no processes are found, exit the script
 if [ "$VSCODE_PIDS" == "No processes found." ]; then
-    echo "Процессы vscode-server не обнаружены."
+    echo "No vscode-server processes detected."
     exit 0
 fi
 
-# Подсчитываем количество процессов
+# Count the number of processes
 VSCODE_PROCESSES_COUNT=$(echo "$VSCODE_PIDS" | wc -l)
 
-echo "Найдено $VSCODE_PROCESSES_COUNT процессов vscode-server."
+echo "$VSCODE_PROCESSES_COUNT vscode-server processes found."
 
-# Если количество процессов превышает максимально допустимое, завершаем их
+# If the number of processes exceeds the allowed maximum, terminate them
 if [ "$VSCODE_PROCESSES_COUNT" -gt "$MAX_ALLOWED_PROCESSES" ]; then
-    echo "Количество процессов превышает максимально разрешенные $MAX_ALLOWED_PROCESSES."
-    # Убиваем процессы
+    echo "The number of processes exceeds the allowed limit of $MAX_ALLOWED_PROCESSES."
+    # Kill the excess processes
     TO_KILL=$(($VSCODE_PROCESSES_COUNT - $MAX_ALLOWED_PROCESSES))
-    echo "Завершение $TO_KILL лишних процессов..."
+    echo "Terminating $TO_KILL excess processes..."
     echo "$VSCODE_PIDS" | head -n "$TO_KILL" | xargs -r kill
-    echo "Лишние процессы vscode-server были завершены."
+    echo "Excess vscode-server processes have been terminated."
 else
-    echo "Количество процессов vscode-server в пределах нормы."
+    echo "The number of vscode-server processes is within the allowed limit."
 fi
