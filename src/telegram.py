@@ -44,13 +44,13 @@ async def create_db():
             'processed BOOLEAN DEFAULT FALSE'
             ')'
         )
-        print("Table 'users' is created or already exists.")
+        print("Table 'People' is created or already exists.")
     except Exception as e:
         print(f"An error occurred while creating the table: {e}")
     finally:
         await conn.close()
 
-async def save_to_database(user_id,chat_id, data):
+async def save_to_database(user_id, chat_id, data):
     conn = await asyncpg.connect(user=DB_USER, password=DB_PASSWORD, database=DB_NAME, host=DB_HOST, port=DB_PORT)
     try:
         await conn.execute(
@@ -70,14 +70,14 @@ async def cmd_start(message: Message, state: FSMContext):
 
 @router.message(Form.name)
 async def process_name(message: Message, state: FSMContext):
-    # Установка значения в контекст состояния
+    # Set the value in the state context
     await state.update_data(name=message.text)
     await state.set_state(Form.document_number)
     await message.answer("What's your Document Number (DD/REF)?")
 
 @router.message(Form.document_number)
 async def process_document_number(message: Message, state: FSMContext):
-    # Получение данных из состояния и обновление их
+    # Get data from the state and update it
     data = await state.get_data()
     data['document_number'] = message.text
     await state.set_data(data)

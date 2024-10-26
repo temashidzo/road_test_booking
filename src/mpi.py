@@ -19,48 +19,51 @@ from selenium.webdriver.common.keys import Keys
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
-
+# Telegram token, database credentials, captcha page URL, and site key from the .env file
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_PORT')
 DB_NAME = os.getenv('DB_NAME')
-captcha_page_url = "https://onlineservices.mpi.mb.ca/drivertesting/identity/verify"
+CAPTCHA_PAGE_URL = os.getenv('CAPTCHA_PAGE_URL')
+SITE_KEY = os.getenv('SITE_KEY')
+
+# Initialize Telegram Bot with the token
 bot = Bot(TELEGRAM_TOKEN)
 
-# Options
+# Set Chrome options for headless mode (running without a visible browser window)
 chrome_options = Options()
-chrome_options.add_argument("--headless")  # Запуск в безголовом режиме
+chrome_options.add_argument("--headless")  # Run in headless mode
 chrome_options.add_argument("--no-sandbox")
 
-# Instantiate the WebDriver
-
+# Load configuration from YAML file
 with open('/projects/mpi/configs/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 def get_latest_user_data():
-    # Подключение к базе данных
+    # Connect to the database
     conn = psycopg2.connect(user=DB_USER, password=DB_PASSWORD, database=DB_NAME, host=DB_HOST, port=DB_PORT)
     try:
-        # Создание курсора для выполнения SQL-запросов
+        # Create a cursor to execute SQL queries
         cursor = conn.cursor()
 
-        # Выполнение запроса для получения последних данных пользователя
+        # Execute the query to get the latest user data
         cursor.execute('SELECT id, user_id, document_number, postal_code, birth_date FROM People ORDER BY id DESC LIMIT 1')
-        # Получение результатов запроса
+        # Fetch the query result
         result = cursor.fetchone()
         return result
     finally:
-        # Закрытие курсора и соединения с базой данных
+        # Close the cursor and the connection
         cursor.close()
         conn.close()
 
 async def send_message_to_user(user_id, message):
     await bot.send_message(chat_id=user_id, text=message)
-    
+
 def format_df_data(df):
     messages = []
     for index, row in df.iterrows():
@@ -71,13 +74,15 @@ def format_df_data(df):
 def solve_recaptcha(local_driver):
     start_time = time.time()
     print("Solving Captcha")
-    solver = TwoCaptcha("ebac4aff88bbb5ca462e9b55d271f3d7")
-    code = solver.solve_captcha(site_key='6Lccu0sUAAAAAKG0hGhC0KgEVfdIHLwm2OY-rP12', page_url=captcha_page_url)
+    # Initialize 2Captcha solver with an API key from the .env file
+    solver = TwoCaptcha(os.getenv('2CAPTCHA_API_KEY'))
+    # Solve the captcha using the site key from the .env file
+    code = solver.solve_captcha(site_key=SITE_KEY, page_url=CAPTCHA_PAGE_URL)
     print(f"Successfully solved the Captcha")
     end_time = time.time() 
     execution_time = end_time - start_time 
-    print("Время выполнения функции:", execution_time, "секунд")
-    # Set the solved Captcha
+    print("Function execution time:", execution_time, "seconds")
+    # Set the solved Captcha value in the form
     recaptcha_response_element = local_driver.find_element(By.ID, 'RecaptchaResponse')
     local_driver.execute_script(f'arguments[0].value = "{code}";', recaptcha_response_element)
 
@@ -104,6 +109,7 @@ def execute_scenario(scenario_name, local_driver):
         print(f"Scenario {scenario_name} not found in configuration.")
 
 async def main():
+    # Instantiate the Chrome WebDriver
     local_driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
     local_driver.set_window_size(1920, 1080)
     
@@ -116,13 +122,15 @@ async def main():
         print("No user data found.")
         return
 
+    # Fill in the user data for the form
     user_data = {
         'document_number': latest_user_data[2],
         'postal_code': latest_user_data[3],
         'birth_date': latest_user_data[4],
     }
     
-    local_driver.get(captcha_page_url)
+    # Open the captcha page
+    local_driver.get(CAPTCHA_PAGE_URL)
     WebDriverWait(local_driver, 10).until(EC.element_to_be_clickable((By.ID, 'authenticate-with-ddref-container'))).click()
     local_driver.find_element(By.ID, 'DateOfBirth').send_keys(user_data['birth_date'])
     local_driver.find_element(By.ID, 'DocumentNumber').send_keys(user_data['document_number'])
@@ -130,21 +138,22 @@ async def main():
     local_driver.execute_script("window.scrollBy(0, 150);")
     local_driver.find_element(By.CLASS_NAME, 'iCheck-helper').click()
     
+    # Solve the captcha
     solve_recaptcha(local_driver)
     local_driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click() 
 
     # Submit the form
     execute_scenario('NEW_APPOINTMENT', local_driver)
 
-        # Предполагаем, что у вас есть список центров или вы можете получить его программно
+    # Example list of service centers, adjust as necessary
     service_centers = ["Gateway Service Centre", "Bison Service Centre", "St. Mary's Service Centre", "Main Street Service Centre", "King Edward Service Centre"]
     final_message = ""
 
     for center in service_centers:
-        # Кликнуть, чтобы открыть выпадающий список
+        # Click to open the dropdown menu
         local_driver.find_element(By.CSS_SELECTOR, "span.select2-selection--single").click()
         
-        # Ожидаем, пока не станет кликабельным и кликаем на нужный элемент
+        # Wait and select the desired center
         if "'" in center:
             parts = center.split("'")
             xpath_expression = f"//li[contains(., concat('{parts[0]}', \"'\", '{parts[1]}'))]"
@@ -152,17 +161,16 @@ async def main():
             xpath_expression = f"//li[contains(., '{center}')]"
 
         WebDriverWait(local_driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath_expression))).click()
-        # time.sleep(1)
 
-
+        # Select the date
         date = local_driver.find_element(By.ID, 'AppointmentDate').text
         local_driver.find_element(By.ID, 'AppointmentDate').send_keys(Keys.CONTROL, 'A')
         local_driver.find_element(By.ID, 'AppointmentDate').send_keys({date})
         
-        # Нажимаем на кнопку поиска
+        # Click the search button
         WebDriverWait(local_driver, 10).until(EC.element_to_be_clickable((By.ID, "search-submit"))).click()
 
-        # Проверяем наличие данных и формируем сообщение
+        # Check for available appointment data
         try:
             WebDriverWait(local_driver, 5).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "#appointment-table td:not(.dataTables_empty)"))
@@ -178,16 +186,15 @@ async def main():
             
         print(final_message)    
 
-# Здесь код для отправки final_message в Telegram
+    # Send final message to Telegram
     user_id = '156837559'
     await bot.send_message(chat_id=user_id, text=final_message)
     local_driver.close()
     end_time = time.time()
-    print(f"Функция main выполнена за {end_time - start_time} секунд")
-    
+    print(f"Main function executed in {end_time - start_time} seconds")
+
 async def other_tasks():
-    # Ваша другая логика
-    print("Другие задачи")
+    print("Other tasks")
 
 async def periodic_main():
     while True:
@@ -196,10 +203,10 @@ async def periodic_main():
 
 async def main_coroutine():
     task1 = asyncio.create_task(periodic_main())
-
-    # Ждем выполнения обеих задач
     await task1
 
+# Run the main coroutine
 asyncio.run(main_coroutine())
-# Pause the execution so you can see the screen after submission before closing the driver
+
+# Pause to see the screen before closing the driver
 input("Press enter to continue")

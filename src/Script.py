@@ -14,18 +14,27 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from aiogram import Bot
 import asyncio
+import os
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
 
-TELEGRAM_TOKEN = '7004343270:AAFT_1nYs4ra_Yxc6YdiCjdEG1WMRhgpn-U'
-DB_USER = 'postgres'
-DB_PASSWORD = 'postgres'
-DB_HOST = '10.211.55.5'
-DB_PORT ='5433'
-DB_NAME = 'telegram'
-captcha_page_url = "https://onlineservices.mpi.mb.ca/drivertesting/identity/verify"
+# Telegram token and database credentials from the .env file
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+DB2_USER = os.getenv('DB2_USER')
+DB2_PASSWORD = os.getenv('DB2_PASSWORD')
+DB2_HOST = os.getenv('DB2_HOST')
+DB2_PORT = os.getenv('DB2_PORT')
+DB2_NAME = os.getenv('DB2_NAME')
+CAPTCHA_PAGE_URL = os.getenv('CAPTCHA_PAGE_URL')
+SITE_KEY = os.getenv('SITE_KEY')
+CAPTCHA_API_KEY = os.getenv('CAPTCHA_API_KEY')
+
+# Initialize Telegram Bot with the token
 bot = Bot(TELEGRAM_TOKEN)
 
-# Options
+# Options for Chrome WebDriver
 chrome_options = Options()
 # chrome_options.add_argument("--headless")
 
@@ -34,25 +43,24 @@ driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install())
 driver.maximize_window()
 
 def get_latest_user_data():
-    # Подключение к базе данных
-    conn = psycopg2.connect(user=DB_USER, password=DB_PASSWORD, database=DB_NAME, host=DB_HOST, port=DB_PORT)
+    # Connect to the database
+    conn = psycopg2.connect(user=DB2_USER, password=DB2_PASSWORD, database=DB2_NAME, host=DB2_HOST, port=DB2_PORT)
     try:
-        # Создание курсора для выполнения SQL-запросов
+        # Create a cursor to execute SQL queries
         cursor = conn.cursor()
 
-        # Выполнение запроса для получения последних данных пользователя
+        # Execute query to get the latest user data
         cursor.execute('SELECT id, user_id, document_number, postal_code, birth_date FROM People ORDER BY id DESC LIMIT 1')
-        # Получение результатов запроса
         result = cursor.fetchone()
         return result
     finally:
-        # Закрытие курсора и соединения с базой данных
+        # Close cursor and connection
         cursor.close()
         conn.close()
 
 async def send_message_to_user(user_id, message):
     await bot.send_message(chat_id=user_id, text=message)
-    
+
 def format_df_data(df):
     messages = []
     for index, row in df.iterrows():
@@ -63,18 +71,20 @@ def format_df_data(df):
 def solve_recaptcha():
     start_time = time.time()
     print("Solving Captcha")
-    solver = TwoCaptcha("ebac4aff88bbb5ca462e9b55d271f3d7")
-    code = solver.solve_captcha(site_key='6Lccu0sUAAAAAKG0hGhC0KgEVfdIHLwm2OY-rP12', page_url=captcha_page_url)
+    # Initialize 2Captcha solver with API key from .env file
+    solver = TwoCaptcha(os.getenv('2CAPTCHA_API_KEY'))
+    # Solve the captcha using the site key from .env file
+    code = solver.solve_captcha(site_key=SITE_KEY, page_url=CAPTCHA_PAGE_URL)
     print(f"Successfully solved the Captcha")
     end_time = time.time() 
     execution_time = end_time - start_time 
-    print("Время выполнения функции:", execution_time, "секунд")
+    print("Function execution time:", execution_time, "seconds")
     # Set the solved Captcha
     recaptcha_response_element = driver.find_element(By.ID, 'RecaptchaResponse')
     driver.execute_script(f'arguments[0].value = "{code}";', recaptcha_response_element)
 
 def send_message_to_user(user_id, message):
-        bot.send_message(chat_id=user_id, text=message)
+    bot.send_message(chat_id=user_id, text=message)
 
 async def main():
     latest_user_data = get_latest_user_data()
@@ -85,13 +95,14 @@ async def main():
         print("No user data found.")
         return
 
+    # Fill in user data for the form
     user_data = {
         'document_number': latest_user_data[2],
         'postal_code': latest_user_data[3],
         'birth_date': latest_user_data[4],
     }
     
-    driver.get(captcha_page_url)
+    driver.get(CAPTCHA_PAGE_URL)
     driver.execute_script("window.scrollBy(0, 150);")
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'authenticate-with-ddref-container'))).click()
     driver.find_element(By.ID, 'DateOfBirth').send_keys(user_data['birth_date'])
@@ -114,19 +125,15 @@ async def main():
     time.sleep(2)
     driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click() 
 
-    
-
-
-    
-        # Предполагаем, что у вас есть список центров или вы можете получить его программно
+    # Assuming you have a list of centers or can obtain it programmatically
     service_centers = ["Gateway Service Centre", "Bison Service Centre", "St. Mary's Service Centre", "Main Street Service Centre", "King Edward Service Centre"]
     final_message = ""
 
     for center in service_centers:
-        # Кликнуть, чтобы открыть выпадающий список
+        # Click to open the dropdown menu
         driver.find_element(By.CSS_SELECTOR, "span.select2-selection--single").click()
         
-        # Ожидаем, пока не станет кликабельным и кликаем на нужный элемент
+        # Wait until clickable and click the desired element
         if "'" in center:
             parts = center.split("'")
             xpath_expression = f"//li[contains(., concat('{parts[0]}', \"'\", '{parts[1]}'))]"
@@ -135,10 +142,10 @@ async def main():
 
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpath_expression))).click()
 
-        # Нажимаем на кнопку поиска
+        # Click the search button
         driver.find_element(By.ID, "search-submit").click()
 
-        # Проверяем наличие данных и формируем сообщение
+        # Check if data is present and format the message
         try:
             WebDriverWait(driver, 5).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "#appointment-table td:not(.dataTables_empty)"))
@@ -154,15 +161,14 @@ async def main():
             
         print(final_message)    
 
-# Здесь код для отправки final_message в Telegram
+    # Send final message to Telegram
     user_id = '156837559'
     await bot.send_message(chat_id=user_id, text=final_message)
-    print("Функция main выполнена")
+    print("Main function completed")
 
  
 async def other_tasks():
-    # Ваша другая логика
-    print("Другие задачи")
+    print("Other tasks")
 
 async def periodic_main():
     while True:
@@ -172,10 +178,9 @@ async def periodic_main():
 async def main_coroutine():
     task1 = asyncio.create_task(periodic_main())
 
-    # Ждем выполнения обеих задач
+    # Wait for tasks to complete
     await task1
 
 asyncio.run(main_coroutine())
-# Pause the execution so you can see the screen after submission before closing the driver
 input("Press enter to continue")
 driver.close()
