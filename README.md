@@ -1,6 +1,6 @@
 <div align="center">
 
-![Main](docs/gif/road4.svg)
+![Main](docs/gif/road4.gif)
 
 **This service automates booking available slots for road tests using a Telegram bot, eliminating the need for manual checks.**
 
