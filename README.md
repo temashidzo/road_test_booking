@@ -36,7 +36,7 @@ Available slots are sent directly to the user in the Telegram bot.
 
 ## Booking Confirmation
 
-Once the user selects a slot, the service books it, and the confirmation is sent via email and Telegram.
+Once the user selects a slot, the service books it, and the confirmation is sent via Telegram.
 
 <img src="docs/img/booking.png" alt="Booking" width="250"/>
 
