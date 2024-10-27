@@ -6,9 +6,6 @@
 
 ---
 
-## 🛠 Technologies Used
-
-
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Selenium](https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
@@ -16,18 +13,16 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Asyncio](https://img.shields.io/badge/Asyncio-808080?style=for-the-badge)
 
-
 ---
 
-#  How it works
 
-**User Data Input**
+## User Data Input
 
 The user enters their information, such as document number, postal code, and birth date.
 
 <img src="docs/img/data_input.png" alt="User Data Input" width="800"/>
 
-**Slot Availability Check**
+## Slot Availability Check
 
 The service checks for available slots at regular intervals.
 
@@ -37,23 +32,33 @@ Available slots are sent directly to the user in the Telegram bot.
 
 <img src="docs/img/response.png" alt="User Data Input" width="300" style="border-radius: 20px;"/>
 
-## Booking Confirmation**
+## Booking Confirmation
 
 Once the user selects a slot, the service books it, and the confirmation is sent via email and Telegram.
 
 ---
 
-## 📦 Features
 
-## Configurable YAML File**: Allows customization of every step when interacting with the booking service.
-## Full Logging**: Logs all service actions for transparency and debugging.
-## Captcha Handling**: Supports solving captchas during the booking process.
+  
+# 📦 Features
+
+<div align="left">
+  
+**Configurable YAML File**: Allows customization of every step when interacting with the booking service.
+
+**Full Logging**: Logs all service actions for transparency and debugging.
+
+**Captcha Handling**: Supports solving captchas during the booking process.
+
 **Customizable Check Intervals**: You can set how often the service checks for available slots.
+
 **Concurrent Requests**: Supports handling multiple users asynchronously.
+
+</div>
 
 ---
 
-## 🤖 Customizable
+# 🤖 Customizable
 
 The service is highly customizable and can be adapted to other booking services or workflows by modifying the configuration in the YAML file.
 
