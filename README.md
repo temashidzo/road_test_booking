@@ -26,7 +26,7 @@ The user enters their information, such as document number, postal code, and bir
 
 The service checks for available slots at regular intervals.
 
-<img src="docs/img/calendar.png" alt="Calendar" width="400"/>
+<img src="docs/img/calendar.png" alt="Calendar" width="250"/>
 
 ## Notifications
 
