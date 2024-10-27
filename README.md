@@ -1,14 +1,13 @@
 <div align="center">
 
-# ![Main](docs/gif/road.gif)
+![Main](docs/gif/road.gif)
 
-## Overview
-
-This service automates booking available slots for road tests using a Telegram bot, eliminating the need for manual checks.
+**This service automates booking available slots for road tests using a Telegram bot, eliminating the need for manual checks.**
 
 ---
 
 ## 🛠 Technologies Used
+
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Selenium](https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white)
@@ -17,27 +16,38 @@ This service automates booking available slots for road tests using a Telegram b
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Asyncio](https://img.shields.io/badge/Asyncio-808080?style=for-the-badge)
 
+
 ---
 
-## 🚀 How It Works
+#  How it works
 
-![User Data Input](docs/img/data_input.png)
-**User Data Input**: The user enters their information, such as document number, postal code, and birth date.
+**User Data Input**
 
-**Slot Availability Check**: The service checks for available slots at regular intervals.
+The user enters their information, such as document number, postal code, and birth date.
 
-![User Data Input](docs/img/response.png)
-**Notifications**: Available slots are sent directly to the user in the Telegram bot.
+<img src="docs/img/data_input.png" alt="User Data Input" width="800"/>
 
-**Booking Confirmation**: Once the user selects a slot, the service books it, and the confirmation is sent via email and Telegram.
+**Slot Availability Check**
+
+The service checks for available slots at regular intervals.
+
+## Notifications
+
+Available slots are sent directly to the user in the Telegram bot.
+
+<img src="docs/img/response.png" alt="User Data Input" width="300" style="border-radius: 20px;"/>
+
+## Booking Confirmation**
+
+Once the user selects a slot, the service books it, and the confirmation is sent via email and Telegram.
 
 ---
 
 ## 📦 Features
 
-**Configurable YAML File**: Allows customization of every step when interacting with the booking service.
-**Full Logging**: Logs all service actions for transparency and debugging.
-**Captcha Handling**: Supports solving captchas during the booking process.
+## Configurable YAML File**: Allows customization of every step when interacting with the booking service.
+## Full Logging**: Logs all service actions for transparency and debugging.
+## Captcha Handling**: Supports solving captchas during the booking process.
 **Customizable Check Intervals**: You can set how often the service checks for available slots.
 **Concurrent Requests**: Supports handling multiple users asynchronously.
 
