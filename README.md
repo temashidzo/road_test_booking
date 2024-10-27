@@ -46,7 +46,7 @@ Once the user selects a slot, the service books it, and the confirmation is sent
   
 # 📦 Features
 
-<div align="left">
+<div align="center">
   
 **Configurable YAML File**: Allows customization of every step when interacting with the booking service.
 
