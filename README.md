@@ -30,7 +30,7 @@ The service checks for available slots at regular intervals.
 
 Available slots are sent directly to the user in the Telegram bot.
 
-<img src="docs/img/response.png" alt="User Data Input" width="300" style="border-radius: 20px;"/>
+<img src="docs/img/response.png" alt="User Data Input"/>
 
 ## Booking Confirmation
 
