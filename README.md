@@ -1,4 +1,4 @@
-# (docs/gif/road.gif)
+# ![Main](docs/gif/road.gif)
 
 ## <div align="center">Overview</div>
 
@@ -61,11 +61,13 @@ Once the details are submitted, the service periodically checks the booking serv
 
 ## <div align="center">🚀 How It Works</div>
 
-<div align="right">
+<div align="left">
 
 1. **User Data Input**: Users enter their information via the Telegram bot, including document number and postal code.
 
-(docs/img/data_input.png)
+<div align="center">
+  ![Input](docs/img/data_input.png)
+</div>
    
 2. **Slot Search**: The service uses Selenium to browse the website and search for available slots at regular intervals.
 
