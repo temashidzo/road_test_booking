@@ -67,3 +67,12 @@ Once the user selects a slot, the service books it, and the confirmation is sent
 The service is highly customizable and can be adapted to other booking services or workflows by modifying the configuration in the YAML file.
 
 </div>
+
+---
+
+<div align="center">
+  
+## 💻 For more detailed instructions, contact me on [Telegram](https://t.me/temashidzo)
+
+</div>
+
