@@ -26,6 +26,8 @@ The user enters their information, such as document number, postal code, and bir
 
 The service checks for available slots at regular intervals.
 
+<img src="docs/img/calendar.png" alt="User Data Input"/>
+
 ## Notifications
 
 Available slots are sent directly to the user in the Telegram bot.
