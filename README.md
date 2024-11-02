@@ -72,7 +72,7 @@ The service is highly customizable and can be adapted to other booking services 
 
 <div align="center">
   
-## 💻 For more detailed instructions, contact me on [Telegram](https://t.me/temashidzo)
+## 🧑‍💻 For more detailed instructions, contact me on [Telegram](https://t.me/temashidzo)
 
 </div>
 
